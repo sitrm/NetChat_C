@@ -62,11 +62,18 @@ namespace NetChat {
 			if (bytesReceived > 0) {
 				std::string message(buffer, bytesReceived);
 				std::cout  << message << std::endl;
-			}
+			} else if (bytesReceived == 0) {
+                std::cout << "Server disconnected." << std::endl;
+                break;
+            } else {
+                std::cerr << "Recv() failed: " << WSAGetLastError() << std::endl;
+                break;
+            }
+
 		}
 	}
 	//--------------------------------------------------------------------------------------------------------
-	void Client::receiveMessageBuffer() {
+	void Client::receiveMessageSerialize() {
 		std::vector<uint8_t> buffer(SIZE);
 		
 		while (true) {
@@ -75,7 +82,14 @@ namespace NetChat {
 			if (bytesReceived > 0) {
 				Core::Message message = Core::Message::deserialize(buffer);
 				std::cout << message.getUsername() << ": " << message.getMessage() << std::endl;
-			}
+			}else if (bytesReceived == 0) {
+                std::cout << "Server disconnected." << std::endl;
+                break;
+            } else {
+                std::cerr << "Recv() failed: " << WSAGetLastError() << std::endl;
+                break;
+            }
+
 		}
 	}
 	//--------------------------------------------------------------------------------------------------------
@@ -97,7 +111,12 @@ namespace NetChat {
 	//--------------------------------------------------------------------------------------------------------
 	void Client::start() {
 
-		connect();
+		try {
+            connect();
+        } catch (const std::exception& e) {
+            std::cerr << "Error: " << e.what() << std::endl;
+            return ;
+        }
 	
 		std::thread(&Client::receiveMessage, this).detach();
 		std::cout << "To leave the chat, enter \"exit\" or Ctrl+C" << std::endl;
@@ -132,7 +151,7 @@ namespace NetChat {
 			std::cerr << "Error: " << e.what() << std::endl;
 			//exit(EXIT_FAILURE);
 		}
-		std::thread(&Client::receiveMessageBuffer, this).detach();
+		std::thread(&Client::receiveMessageSerialize, this).detach();
 		std::cout << "To leave the chat, enter \"exit\" or Ctrl+C" << std::endl;
 		std::cout << "Please enter your userName: ";
 		std::string name;

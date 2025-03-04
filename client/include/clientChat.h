@@ -39,6 +39,6 @@ namespace NetChat {
 		void sendMessage(const std::vector<uint8_t> buffer) const;
 
 		void receiveMessage();   
-		void receiveMessageBuffer();
+		void receiveMessageSerialize();
 	}; // class Client
 } // namespace NetChat

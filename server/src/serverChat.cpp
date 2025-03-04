@@ -23,7 +23,7 @@ namespace NetChat {
 		//init WinSock
 		if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0) {
 			throw std::runtime_error("WSA init FAILED!\n");
-			__debugbreak();
+			// __debugbreak();
 		}
 		printf("WSA init seccess!\n");
 
@@ -62,6 +62,7 @@ namespace NetChat {
 		while (true) {
 			bytesReceived = recv(clientSocket, buffer, SIZE, 0);
 			if (bytesReceived <= 0) {
+				Server::logCurrentTime();
 				std::cout << "Client(" << clientSocket << ") disconnected" << std::endl;
 				break;
 			}
@@ -75,6 +76,7 @@ namespace NetChat {
 						//exit(EXIT_FAILURE);
 					}
 					std::string message(buffer, bytesReceived);
+					Server::logCurrentTime();
 					std::cout << clientSocket << " send message to "<< client  << " | DATA: " << message << std::endl;
 				}
 			}
@@ -105,7 +107,7 @@ namespace NetChat {
 			for (SOCKET client : clients) {
 				if (client != clientSocket) {
 					if ((send(client, reinterpret_cast<char*>(buffer.data()), bytesReceived, 0)) == SOCKET_ERROR) {
-						printf("send() FAILED...%d\n", WSAGetLastError());
+						std::cerr << "Send() failed: " << WSAGetLastError() << std::endl;
 						//exit(EXIT_FAILURE);
 					}
 					Core::Message message = Core::Message::deserialize(buffer);
@@ -139,8 +141,10 @@ namespace NetChat {
 
 			if (clientSocket == SOCKET_ERROR) {
 				std::cerr << "Accept() FAILED\n";
-				break;
+				continue;
 			}
+			Server::logCurrentTime();
+
 			std::cout << "New client connected: " << inet_ntoa(clientAddr.sin_addr) << ":" << ntohs(clientAddr.sin_port);
 			std::cout << "| Socket client = " << clientSocket << std::endl;
 
