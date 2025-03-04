@@ -130,7 +130,7 @@ namespace NetChat {
 		}
 		catch (const std::exception& e) {
 			std::cerr << "Error: " << e.what() << std::endl;
-			exit(EXIT_FAILURE);
+			//exit(EXIT_FAILURE);
 		}
 		std::thread(&Client::receiveMessageBuffer, this).detach();
 		std::cout << "To leave the chat, enter \"exit\" or Ctrl+C" << std::endl;

@@ -72,7 +72,7 @@ namespace NetChat {
 				if (client != clientSocket) {
 					if ((send(client, buffer, bytesReceived, 0)) == SOCKET_ERROR) {
 						printf("send() FAILED...%d\n", WSAGetLastError());
-						exit(EXIT_FAILURE);
+						//exit(EXIT_FAILURE);
 					}
 					std::string message(buffer, bytesReceived);
 					std::cout << clientSocket << " send message to "<< client  << " | DATA: " << message << std::endl;
@@ -106,7 +106,7 @@ namespace NetChat {
 				if (client != clientSocket) {
 					if ((send(client, reinterpret_cast<char*>(buffer.data()), bytesReceived, 0)) == SOCKET_ERROR) {
 						printf("send() FAILED...%d\n", WSAGetLastError());
-						exit(EXIT_FAILURE);
+						//exit(EXIT_FAILURE);
 					}
 					Core::Message message = Core::Message::deserialize(buffer);
 
