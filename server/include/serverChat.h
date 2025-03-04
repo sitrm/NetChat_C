@@ -1,12 +1,14 @@
 #pragma once
 #include <iostream>
 #include <cassert>
-#include <unordered_map>
 #include <vector>
 #include <algorithm>
 #include <thread>
 #include <mutex>
-
+#include <chrono>
+#include <ctime>
+#include <iomanip>
+//-----------------------------------------------------------------------------------------------------------
 #include <WinSock2.h>
 #include <ws2tcpip.h>
 //-----------------------------------------------------------------------------------------------------------
@@ -30,6 +32,7 @@ namespace NetChat {
 		std::mutex clientMutex;  // mutex for thread safety
 
 		void handleClient(SOCKET clientSocket);
+		void handleClientSerialize(SOCKET clientSocket);
 
 	public:
 		Server(int port, const std::string& ipAddress);
@@ -39,5 +42,7 @@ namespace NetChat {
 
 		void start();
 		void stop();
-	};
+	public:
+		static void logCurrentTime();
+	}; // class Server
 } // namespace NetChat

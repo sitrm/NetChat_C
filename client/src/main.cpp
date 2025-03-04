@@ -8,7 +8,7 @@ int main() {
 	
 	try{
 		NetChat::Client client(PORT_SERVER, IP_SERVER);
-		client.start();
+		client.startSerialize();
 	}
 	catch (const std::exception& e) {
 		std::cerr << "Error: " << e.what() << std::endl;

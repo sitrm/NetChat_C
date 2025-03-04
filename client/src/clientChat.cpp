@@ -1,5 +1,5 @@
 #include "../include/clientChat.h"
-
+#include "../../messageSerialize/include/message.h"
 
 
 namespace NetChat {
@@ -66,9 +66,32 @@ namespace NetChat {
 		}
 	}
 	//--------------------------------------------------------------------------------------------------------
+	void Client::receiveMessageBuffer() {
+		std::vector<uint8_t> buffer(SIZE);
+		
+		while (true) {
+			int bytesReceived = recv(clientSocket, reinterpret_cast<char*>(buffer.data()), SIZE, 0);
+
+			if (bytesReceived > 0) {
+				Core::Message message = Core::Message::deserialize(buffer);
+				std::cout << message.getUsername() << ": " << message.getMessage() << std::endl;
+			}
+		}
+	}
+	//--------------------------------------------------------------------------------------------------------
 	void Client::sendMessage(const std::string& message) const {
 		if (send(clientSocket, message.c_str(), message.size(), 0) == SOCKET_ERROR) {
 			std::cerr << "Send failed" << std::endl;
+		}
+	}
+	//--------------------------------------------------------------------------------------------------------
+	void Client::sendMessage(const std::vector<uint8_t> buffer) const {
+		if (buffer.empty()) {
+			std::cerr << "Buffer is empty!" << std::endl;
+			return;
+		}
+		if (send(clientSocket, reinterpret_cast<const char*>(buffer.data()), buffer.size(), 0) == SOCKET_ERROR) {
+			std::cerr << "Send failed: " << WSAGetLastError() << std::endl;
 		}
 	}
 	//--------------------------------------------------------------------------------------------------------
@@ -100,6 +123,35 @@ namespace NetChat {
 			sendMessage(message);
 		}
 	}
+	//--------------------------------------------------------------------------------------------------------
+	void Client::startSerialize() {
+		try {
+			connect();
+		}
+		catch (const std::exception& e) {
+			std::cerr << "Error: " << e.what() << std::endl;
+			exit(EXIT_FAILURE);
+		}
+		std::thread(&Client::receiveMessageBuffer, this).detach();
+		std::cout << "To leave the chat, enter \"exit\" or Ctrl+C" << std::endl;
+		std::cout << "Please enter your userName: ";
+		std::string name;
+		std::cin >> name;
+		std::cout << std::endl;
+
+		while (true) {
+			std::string data;
+			std::getline(std::cin, data);
+			if (data.empty()) continue;
+			if (data == "exit") {
+				disconnect();
+				break;
+			}
+			Core::Message message(name, data);
+			std::vector<uint8_t> buffer = message.serialize();
+			sendMessage(buffer);
+		}
+	}	
 	//--------------------------------------------------------------------------------------------------------
 	void Client::disconnect() const {
 		closesocket(clientSocket);

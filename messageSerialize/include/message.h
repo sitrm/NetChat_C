@@ -5,7 +5,7 @@
 #include <bitset>
 #include <cstdint>
 #include <vector>
-
+#include "core.h"
 namespace Core {
 	class Message {
 	private:

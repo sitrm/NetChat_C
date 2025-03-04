@@ -1,4 +1,5 @@
 #include "../include/serverChat.h"
+#include "../../messageSerialize/include/message.h"
 
 #pragma warning(disable: 4996) 
 
@@ -52,10 +53,7 @@ namespace NetChat {
 			WSACleanup();
 			throw std::runtime_error("Listen() ERROR!\n");
 		}
-	}
-	
-	//---------------------------------------------------------------------------------------------
-	
+	}	
 	//---------------------------------------------------------------------------------------------
 	void Server::handleClient(SOCKET clientSocket) {
 		char buffer[SIZE];
@@ -67,7 +65,6 @@ namespace NetChat {
 				std::cout << "Client(" << clientSocket << ") disconnected" << std::endl;
 				break;
 			}
-
 			// lock clinet list to prevent concurrent modifications
 			std::lock_guard<std::mutex> lock(clientMutex);
 
@@ -82,14 +79,50 @@ namespace NetChat {
 				}
 			}
 		}
-
 		// Remove client from the list and close the socket
 		{
 			std::lock_guard<std::mutex> lock(clientMutex);                                       // that safe 
 			clients.erase(std::remove(clients.begin(), clients.end(), clientSocket), clients.end());
 		}
 		//delete lock - unlock mutex
+		closesocket(clientSocket);
+	}
+	//---------------------------------------------------------------------------------------------
+	void Server::handleClientSerialize(SOCKET clientSocket) {
+		std::vector<uint8_t> buffer(SIZE);
+		int bytesReceived = 0;
 
+		while (true) {
+			bytesReceived = recv(clientSocket, reinterpret_cast<char*>(buffer.data()), SIZE, 0);
+			if (bytesReceived <= 0) {
+				Server::logCurrentTime();
+				std::cout << "Client(" << clientSocket << ") disconnected" << std::endl;
+				break;
+			}
+			// lock clinet list to prevent concurrent modifications
+			std::lock_guard<std::mutex> lock(clientMutex);
+
+			for (SOCKET client : clients) {
+				if (client != clientSocket) {
+					if ((send(client, reinterpret_cast<char*>(buffer.data()), bytesReceived, 0)) == SOCKET_ERROR) {
+						printf("send() FAILED...%d\n", WSAGetLastError());
+						exit(EXIT_FAILURE);
+					}
+					Core::Message message = Core::Message::deserialize(buffer);
+
+					Server::logCurrentTime();
+					
+					std::cout << clientSocket << " send message to " << client << " | DATA:[";
+					std::cout << message.getUsername() << "]: " << message.getMessage() << std::endl;
+				}
+			}
+		}
+		// Remove client from the list and close the socket
+		{
+			std::lock_guard<std::mutex> lock(clientMutex);     // that safe 
+			clients.erase(std::remove(clients.begin(), clients.end(), clientSocket), clients.end());
+		}
+		//delete lock - unlock mutex
 		closesocket(clientSocket);
 	}
 	//---------------------------------------------------------------------------------------------
@@ -119,18 +152,26 @@ namespace NetChat {
 			//delete lock
 
 			//the thread fo client processing
-			std::thread(&Server::handleClient, this, clientSocket).detach();
+			std::thread(&Server::handleClientSerialize, this, clientSocket).detach();
 		}
 	}
 	//---------------------------------------------------------------------------------------------
 	Server::~Server() {
-
 		for (SOCKET client : clients) {
 			closesocket(client);
 		}
+
 		WSACleanup();
 		closesocket(serverSocket);
 		std::cout << "Server stopped." << std::endl;
+	}
+	//---------------------------------------------------------------------------------------------
+	void Server::logCurrentTime() {
+		auto now = std::chrono::system_clock::now(); // Текущее время
+		std::time_t now_time = std::chrono::system_clock::to_time_t(now);
+		std::tm now_tm = *std::localtime(&now_time); // Преобразуем в локальное время
+
+		std::cout << "[" << std::put_time(&now_tm, "%Y-%m-%d %H:%M:%S") << "] ";
 	}
 	//---------------------------------------------------------------------------------------------
 
