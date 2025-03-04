@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Widget</class>
+ <widget class="QWidget" name="Widget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>519</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Widget</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QLineEdit" name="nameLED">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QLineEdit {
+  border-radius: 8px;
+  border: 1px solid #e0e4e7;
+  padding: 5px 10px;
+}
+
+QLineEdit::placeholder {
+  color: #767e89;
+}
+QLineEdit {
+  border-radius: 8px;
+  border: 1px solid #e0e4e7;
+  padding: 5px 10px;
+  font-size: 15px;
+  font-family: &quot;Arial&quot;; /* Семейство шрифтов */
+  font-weight: bold;    /* Жирный текст */
+}</string>
+           </property>
+           <property name="placeholderText">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="ipAddressLED">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QLineEdit {
+  border-radius: 8px;
+  border: 1px solid #e0e4e7;
+  padding: 5px 10px;
+}
+
+QLineEdit::placeholder {
+  color: #767e89;
+}
+QLineEdit {
+  border-radius: 8px;
+  border: 1px solid #e0e4e7;
+  padding: 5px 10px;
+  font-size: 15px;
+  font-family: &quot;Arial&quot;; /* Семейство шрифтов */
+  font-weight: bold;    /* Жирный текст */
+}</string>
+           </property>
+           <property name="placeholderText">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="portLED">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QLineEdit {
+  border-radius: 8px;
+  border: 1px solid #e0e4e7;
+  padding: 5px 10px;
+}
+
+QLineEdit::placeholder {
+  color: #767e89;
+}
+QLineEdit {
+  border-radius: 8px;
+  border: 1px solid #e0e4e7;
+  padding: 5px 10px;
+  font-size: 15px;
+  font-family: &quot;Arial&quot;; /* Семейство шрифтов */
+  font-weight: bold;    /* Жирный текст */
+}</string>
+           </property>
+           <property name="placeholderText">
+            <string/>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QPushButton" name="connectPBN">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
+           <horstretch>25</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QPushButton {
+  border-radius: 8px; /* Закругленные углы */
+  border: 2px solid #008CBA; /* Голубая граница */
+  padding: 1px 1px; /* Отступы внутри кнопки */
+  font-size: 14px; /* Размер шрифта */
+  font-weight: bold; /* Жирный текст */
+  background-color: white; /* Белый фон */
+  color: #008CBA; /* Цвет текста */
+}
+
+QPushButton:hover {
+  background-color:  #90EE90; /* Фон при наведении */
+  color: white; /* Цвет текста при наведении */
+}
+
+QPushButton:pressed {
+  background-color:#32CD32; /* Фон при нажатии */
+  color: white; /* Цвет текста при нажатии */
+}</string>
+         </property>
+         <property name="text">
+          <string>connect</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
+           <horstretch>100</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="pixmap">
+          <pixmap resource="resourse.qrc">:/images/resources/anon.jpg</pixmap>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QTextEdit" name="logTE">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>123</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QTextEdit {
+  border-radius: 8px;
+  border: 2px solid  #008CBA;
+  padding: 1px 1px;
+ ont-family: &quot;Arial&quot;; /* Семейство шрифтов */
+ font-size: 15px;
+}
+</string>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QTextEdit" name="inputTE">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>507</width>
+         <height>100</height>
+        </size>
+       </property>
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QTextEdit {
+  border-radius: 8px;
+  border: 2px solid  #008CBA;
+  padding: 1px 1px;
+ font-size: 14px;
+ ont-family: &quot;Arial&quot;; /* Семейство шрифтов */
+}</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="sendPBN">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>14</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777209</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton {
+  border-radius: 8px; /* Закругленные углы */
+  border: 2px solid #008CBA; /* Голубая граница */
+  padding: 1px 1px; /* Отступы внутри кнопки */
+  font-size: 14px; /* Размер шрифта */
+  font-weight: bold; /* Жирный текст */
+  background-color: white; /* Белый фон */
+  color: #008CBA; /* Цвет текста */
+}
+
+QPushButton:hover {
+  background-color: #008CBA; /* Фон при наведении */
+  color: white; /* Цвет текста при наведении */
+}
+
+QPushButton:pressed {
+  background-color: #006B9E; /* Фон при нажатии */
+  color: white; /* Цвет текста при нажатии */
+}</string>
+       </property>
+       <property name="text">
+        <string>send</string>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>20</width>
+         <height>26</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="resourse.qrc"/>
+ </resources>
+ <connections/>
+</ui>
