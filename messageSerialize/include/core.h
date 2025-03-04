@@ -6,9 +6,6 @@
 #include <cstdint>
 #include <vector>
 
-
-
-
 namespace Core {
 	namespace Util {
 		inline void save(const char* file, std::vector<uint8_t>& buffer) {
@@ -44,6 +41,7 @@ namespace Core {
 		*iterator += sizeof(T);
 		return value;
 	}
+
 	template<>
 	inline std::string decode<std::string>(const std::vector<uint8_t>& buffer, int16_t* iterator) {
 		
@@ -52,7 +50,5 @@ namespace Core {
 		*iterator += lenght;
 		return value;
 	}
-
-
-
+	
 } // namespace Core

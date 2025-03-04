@@ -1,8 +1,7 @@
-#include "message.h"
-#include "core.h"
+#include "../include/message.h"
+#include "../include/core.h"
 
 using namespace Core;
-
 
 Message::Message(const std::string& name, const std::string& message)
 	:
@@ -30,7 +29,6 @@ Message Core::Message::deserialize(const std::vector<uint8_t>& buffer)
 
 	std::string username = Core::decode<std::string>(buffer, &it);
 	std::string message = Core::decode<std::string>(buffer, &it);
-
 
 	return Message(username, message);
 }

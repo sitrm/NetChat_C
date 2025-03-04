@@ -6,8 +6,6 @@
 #include <cstdint>
 #include <vector>
 
-
-
 namespace Core {
 	class Message {
 	private:
@@ -24,10 +22,10 @@ namespace Core {
 		Message(const std::string& name, const std::string& message);
 		~Message() = default;
 	public:
-		std::string getUsername()  const { return this->username;     }
-		std::string getMessage()   const { return this->message;      }
-		uint16_t getUsernameSize() const { return this->usernameSize; }
-		uint16_t getMessageSize()  const { return this->messageSize;  }
+		inline std::string getUsername()  const { return this->username;     }
+		inline std::string getMessage()   const { return this->message;      }
+		inline uint16_t getUsernameSize() const { return this->usernameSize; }
+		inline uint16_t getMessageSize()  const { return this->messageSize;  }
 	public:
 		std::vector<uint8_t> serialize();
 		static Message deserialize(const std::vector<uint8_t>& buffer);

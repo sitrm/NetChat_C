@@ -1,5 +1,5 @@
-#include "message.h"
-#include "core.h"
+#include "../include/message.h"
+#include "../include/core.h"
 
 
 using namespace Core;
