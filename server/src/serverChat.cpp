@@ -101,10 +101,16 @@ namespace NetChat {
 				std::cout << "Client(" << clientSocket << ") disconnected" << std::endl;
 				break;
 			}
-			// lock clinet list to prevent concurrent modifications
-			std::lock_guard<std::mutex> lock(clientMutex);
 
-			for (SOCKET client : clients) {
+			std::vector<SOCKET> clientsCopy;
+			{
+				// lock clinet list to prevent concurrent modifications
+				std::lock_guard<std::mutex> lock(clientMutex);
+				clientsCopy = clients;
+
+			}
+			
+			for (SOCKET client : clientsCopy) {
 				if (client != clientSocket) {
 					if ((send(client, reinterpret_cast<char*>(buffer.data()), bytesReceived, 0)) == SOCKET_ERROR) {
 						std::cerr << "Send() failed: " << WSAGetLastError() << std::endl;
