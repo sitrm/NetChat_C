@@ -1,5 +1,7 @@
 #include "../include/serverChat.h"
 #include <string>
+#include <windows.h>
+
 
 void printHelp(const std::string& programName) {
     std::cout << "Usage: " << programName << " <IP_ADDRESS> <PORT>" << std::endl;
@@ -10,7 +12,11 @@ void printHelp(const std::string& programName) {
 
 int main(int argc, char* argv[]) {
 	
-	
+    //setlocale(LC_ALL, "ru_RU.UTF-8");
+    SetConsoleOutputCP(CP_UTF8);
+    SetConsoleCP(CP_UTF8);
+
+
 	for (int i = 1; i < argc; ++i) {
         std::string arg = argv[i];
         if (arg == "--help" || arg == "-h") {
