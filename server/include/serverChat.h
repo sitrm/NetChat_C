@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <thread>
 #include <mutex>
+#include <shared_mutex>
 #include <chrono>
 #include <ctime>
 #include <iomanip>
@@ -29,9 +30,9 @@ namespace NetChat {
 		int port;
 		std::string ipAddress;
 
-		std::mutex clientMutex;  // mutex for thread safety
+		std::shared_mutex clientMutex;  // mutex for thread safety
 
-		void handleClient(SOCKET clientSocket);
+		//void handleClient(SOCKET clientSocket);
 		void handleClientSerialize(SOCKET clientSocket);
 
 	public:
