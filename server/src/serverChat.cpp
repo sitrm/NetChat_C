@@ -55,40 +55,38 @@ namespace NetChat {
 		}
 	}	
 	//---------------------------------------------------------------------------------------------
-	void Server::handleClient(SOCKET clientSocket) {
-		char buffer[SIZE];
-		int bytesReceived = 0;
-
-		while (true) {
-			bytesReceived = recv(clientSocket, buffer, SIZE, 0);
-			if (bytesReceived <= 0) {
-				Server::logCurrentTime();
-				std::cout << "Client(" << clientSocket << ") disconnected" << std::endl;
-				break;
-			}
-			// lock clinet list to prevent concurrent modifications
-			std::lock_guard<std::mutex> lock(clientMutex);
-
-			for (SOCKET client : clients) {
-				if (client != clientSocket) {
-					if ((send(client, buffer, bytesReceived, 0)) == SOCKET_ERROR) {
-						printf("send() FAILED...%d\n", WSAGetLastError());
-						//exit(EXIT_FAILURE);
-					}
-					std::string message(buffer, bytesReceived);
-					Server::logCurrentTime();
-					std::cout << clientSocket << " send message to "<< client  << " | DATA: " << message << std::endl;
-				}
-			}
-		}
-		// Remove client from the list and close the socket
-		{
-			std::lock_guard<std::mutex> lock(clientMutex);                                       // that safe 
-			clients.erase(std::remove(clients.begin(), clients.end(), clientSocket), clients.end());
-		}
-		//delete lock - unlock mutex
-		closesocket(clientSocket);
-	}
+	// void Server::handleClient(SOCKET clientSocket) {
+	// 	char buffer[SIZE];
+	// 	int bytesReceived = 0;
+	// 	while (true) {
+	// 		bytesReceived = recv(clientSocket, buffer, SIZE, 0);
+	// 		if (bytesReceived <= 0) {
+	// 			Server::logCurrentTime();
+	// 			std::cout << "Client(" << clientSocket << ") disconnected" << std::endl;
+	// 			break;
+	// 		}
+	// 		// lock clinet list to prevent concurrent modifications
+	// 		std::lock_guard<std::mutex> lock(clientMutex);
+	// 		for (SOCKET client : clients) {
+	// 			if (client != clientSocket) {
+	// 				if ((send(client, buffer, bytesReceived, 0)) == SOCKET_ERROR) {
+	// 					printf("send() FAILED...%d\n", WSAGetLastError());
+	// 					//exit(EXIT_FAILURE);
+	// 				}
+	// 				std::string message(buffer, bytesReceived);
+	// 				Server::logCurrentTime();
+	// 				std::cout << clientSocket << " send message to "<< client  << " | DATA: " << message << std::endl;
+	// 			}
+	// 		}
+	// 	}
+	// 	// Remove client from the list and close the socket
+	// 	{
+	// 		std::lock_guard<std::mutex> lock(clientMutex);                                       // that safe 
+	// 		clients.erase(std::remove(clients.begin(), clients.end(), clientSocket), clients.end());
+	// 	}
+	// 	//delete lock - unlock mutex
+	// 	closesocket(clientSocket);
+	// }
 	//---------------------------------------------------------------------------------------------
 	void Server::handleClientSerialize(SOCKET clientSocket) {
 		std::vector<uint8_t> buffer(SIZE);
@@ -103,18 +101,18 @@ namespace NetChat {
 			}
 
 			std::vector<SOCKET> clientsCopy;
+			// lock clinet list to prevent concurrent modifications
 			{
-				// lock clinet list to prevent concurrent modifications
-				std::lock_guard<std::mutex> lock(clientMutex);
+				//read
+				std::shared_lock<std::shared_mutex> lock(clientMutex);
 				clientsCopy = clients;
-
 			}
-			
+
 			for (SOCKET client : clientsCopy) {
 				if (client != clientSocket) {
 					if ((send(client, reinterpret_cast<char*>(buffer.data()), bytesReceived, 0)) == SOCKET_ERROR) {
 						std::cerr << "Send() failed: " << WSAGetLastError() << std::endl;
-						//exit(EXIT_FAILURE);
+						throw std::runtime_error("send() FAILED...");
 					}
 					Core::Message message = Core::Message::deserialize(buffer);
 
@@ -127,7 +125,8 @@ namespace NetChat {
 		}
 		// Remove client from the list and close the socket
 		{
-			std::lock_guard<std::mutex> lock(clientMutex);     // that safe 
+			//write
+			std::unique_lock<std::shared_mutex> lock(clientMutex);    
 			clients.erase(std::remove(clients.begin(), clients.end(), clientSocket), clients.end());
 		}
 		//delete lock - unlock mutex
@@ -149,14 +148,15 @@ namespace NetChat {
 				std::cerr << "Accept() FAILED\n";
 				continue;
 			}
-			Server::logCurrentTime();
 
+			Server::logCurrentTime();
 			std::cout << "New client connected: " << inet_ntoa(clientAddr.sin_addr) << ":" << ntohs(clientAddr.sin_port);
 			std::cout << "| Socket client = " << clientSocket << std::endl;
 
 			// Lock client list before adding new client
 			{
-				std::lock_guard<std::mutex> lock(clientMutex);
+				//write
+				std::unique_lock<std::shared_mutex> lock(clientMutex);
 				clients.push_back(clientSocket);
 			}
 			//delete lock
