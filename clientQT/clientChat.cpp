@@ -73,7 +73,9 @@ namespace NetChat {
                 std::cerr << "Connection closed by server." << std::endl;
                 break;
             } else {
-                std::cerr << "recv failed: " << WSAGetLastError() << std::endl;
+                // std::cerr << "recv failed: " << WSAGetLastError() << std::endl;
+                // break;
+                emit disconnectServer();
                 break;
             }
         }

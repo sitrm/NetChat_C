@@ -44,12 +44,15 @@ void Widget::on_connectPBN_clicked()
         IP_ADDRESS = ui->ipAddressLED->text().toStdString();
         client = new NetChat::Client(PORT, IP_ADDRESS);
         connect(client, &NetChat::Client::messageReceived, this, &Widget::on_messageReceived); // connect signal slot!
+        connect(client, &NetChat::Client::disconnectServer, this, &Widget::on_disconnectServer);
         try {
             client->connect();      // connect client
             std::string pport = std::to_string(PORT);
             log("CONNECTED TO SERVER AT: " + QString::fromStdString(IP_ADDRESS) +":"+ QString::fromStdString(ui->portLED->text().toStdString()));
             ui->connectPBN->setEnabled(false);
             ui->inputTE->setEnabled(true);
+            ui->portLED->setEnabled(false);
+            ui->ipAddressLED->setEnabled(false);
             ui->sendPBN->setEnabled(true);
         }catch(const std::exception& e) {
             log(QString("Connection failed...: ") + e.what());
@@ -88,7 +91,11 @@ void Widget::on_messageReceived(const QString &message)
     log(message);
 }
 //-------------------------------------------------------------------------------------------
-
+void Widget::on_disconnectServer(){
+    ui->connectPBN->setEnabled(true);
+    log("The server crashed. Click the connect button again!");
+}
+//-------------------------------------------------------------------------------------------
 bool Widget::eventFilter(QObject *obj, QEvent *event) {
     // проверяем такое ли событие вообще
     if (obj == ui->inputTE && event->type() == QEvent::KeyPress) {
