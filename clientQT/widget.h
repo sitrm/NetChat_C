@@ -43,6 +43,8 @@ private slots:
     void on_connectPBN_clicked();
 
     void on_messageReceived(const QString& message);
+    void on_disconnectServer();
+
     void on_sendPBN_clicked();
 
 
